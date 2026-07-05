@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookLog</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ========== LOGIN ========== -->
+<div id="screen-login" class="screen">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="logo-mark">📚</span>
+        <h1>BookLog</h1>
+        <p>読書記録をシェアしよう</p>
+      </div>
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" id="login-email" placeholder="example@mail.com" value="demo@booklog.com" />
+      </div>
+      <div class="form-group">
+        <label>パスワード</label>
+        <input type="password" id="login-password" placeholder="••••••••" value="password" />
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:8px" onclick="login()">ログイン</button>
+      <div class="auth-link">
+        アカウントをお持ちでない方は <a onclick="showScreen('screen-signup')">新規登録</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SIGNUP ========== -->
+<div id="screen-signup" class="screen">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="logo-mark">📚</span>
+        <h1>BookLog</h1>
+        <p>アカウントを作成して始めよう</p>
+      </div>
+      <div class="form-group">
+        <label>ユーザー名</label>
+        <input type="text" id="signup-username" placeholder="例: book_lover" />
+      </div>
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" id="signup-email" placeholder="example@mail.com" />
+      </div>
+      <div class="form-group">
+        <label>パスワード（8文字以上）</label>
+        <input type="password" id="signup-password" placeholder="••••••••" />
+      </div>
+      <div class="form-group">
+        <label>パスワード（確認）</label>
+        <input type="password" id="signup-confirm" placeholder="••••••••" />
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:8px" onclick="signup()">アカウントを作成</button>
+      <div class="auth-link">
+        すでにアカウントをお持ちの方は <a onclick="showScreen('screen-login')">ログイン</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== HOME ========== -->
+<div id="screen-home" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo" onclick="showScreen('screen-home')">
+        <span>📚</span> BookLog
+      </div>
+      <div class="header-actions">
+        <div class="header-user" onclick="openProfile(1)">
+          <div class="avatar avatar-sm">B</div>
+          <span style="font-size:13px;font-weight:600;color:var(--text-2)">book_lover</span>
+        </div>
+        <button class="btn-logout" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+  </header>
+  <div class="main-content">
+    <div style="margin-bottom:24px">
+      <div class="section-title">レビュー</div>
+      <div class="section-subtitle">みんなの読書記録</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" data-tab="all" onclick="switchTab('all')">すべて</div>
+      <div class="tab" data-tab="following" onclick="switchTab('following')">フォロー中</div>
+    </div>
+    <div id="review-list"></div>
+  </div>
+  <button class="fab" title="レビューを書く" onclick="openCreateReview()">＋</button>
+</div>
+
+<!-- ========== REVIEW DETAIL ========== -->
+<div id="screen-detail" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">📚 BookLog</div>
+      <div class="header-actions">
+        <button class="btn-logout" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+  </header>
+  <div class="main-content">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home'); renderHome()">← 戻る</button>
+    </div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- ========== REVIEW FORM ========== -->
+<div id="screen-form" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">📚 BookLog</div>
+      <div class="header-actions">
+        <button class="btn-logout" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+  </header>
+  <div class="main-content">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home')">← 戻る</button>
+      <span class="page-title" id="form-screen-title">レビューを書く</span>
+    </div>
+    <div class="review-form">
+      <div class="form-group">
+        <label>書籍名 <span style="color:var(--red)">*</span></label>
+        <input type="text" id="form-book-title" placeholder="例: 夜と霧" />
+      </div>
+      <div class="form-group">
+        <label>星評価 <span style="color:var(--red)">*</span></label>
+        <div class="stars-input" id="star-input">
+          <span class="star" onclick="selectStar(1)">☆</span>
+          <span class="star" onclick="selectStar(2)">☆</span>
+          <span class="star" onclick="selectStar(3)">☆</span>
+          <span class="star" onclick="selectStar(4)">☆</span>
+          <span class="star" onclick="selectStar(5)">☆</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>読書ステータス <span style="color:var(--red)">*</span></label>
+        <div class="status-radio">
+          <label class="radio-option">
+            <input type="radio" name="status" id="form-status-reading" value="reading" checked />
+            📖 読書中
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="status" id="form-status-completed" value="completed" />
+            ✅ 読了
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>感想 <span style="color:var(--red)">*</span></label>
+        <textarea id="form-body" placeholder="この本を読んで感じたこと、おすすめしたいポイントなど…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>写真（最大4枚）</label>
+        <div class="photo-preview-area">
+          <div class="photo-placeholder">📖</div>
+          <button class="photo-add-btn" onclick="showToast('Mock では写真選択は表示のみです')">
+            <span class="photo-add-icon">📷</span>
+            <span>追加</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="showScreen('screen-home')">キャンセル</button>
+        <button class="btn btn-primary" onclick="submitReview()">投稿する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PROFILE ========== -->
+<div id="screen-profile" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">📚 BookLog</div>
+      <div class="header-actions">
+        <button class="btn-logout" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+  </header>
+  <div class="main-content">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home'); renderHome()">← 戻る</button>
+    </div>
+    <div id="profile-content"></div>
+  </div>
+</div>
+
+<!-- ========== EDIT PROFILE ========== -->
+<div id="screen-edit-profile" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">📚 BookLog</div>
+    </div>
+  </header>
+  <div class="main-content">
+    <div class="page-header">
+      <button class="back-btn" onclick="openProfile(1)">← 戻る</button>
+      <span class="page-title">プロフィール編集</span>
+    </div>
+    <div class="review-form">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border)">
+        <div class="avatar avatar-lg">B</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px">アイコン画像</div>
+          <button class="btn btn-outline" style="font-size:13px;padding:8px 16px" onclick="showToast('Mock では画像選択は表示のみです')">
+            📷 変更する
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ユーザー名</label>
+        <input type="text" value="book_lover" />
+      </div>
+      <div class="form-group">
+        <label>自己紹介（160文字以内）</label>
+        <textarea style="min-height:80px">読書と旅が好きです。特に小説とSFをよく読みます。月10冊を目標に。</textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="openProfile(1)">キャンセル</button>
+        <button class="btn btn-primary" onclick="saveProfile()">保存する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FOLLOW LIST ========== -->
+<div id="screen-follow-list" class="screen">
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">📚 BookLog</div>
+    </div>
+  </header>
+  <div class="main-content">
+    <div class="page-header">
+      <button class="back-btn" onclick="openProfile(1)">← 戻る</button>
+      <span class="page-title" id="follow-list-title">フォロー中</span>
+    </div>
+    <div class="follow-list-card">
+      <div id="follow-list-content"></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

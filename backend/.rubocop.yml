@@ -1,0 +1,37 @@
+# Omakase Ruby styling for Rails
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+plugins:
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - "db/schema.rb"
+    - "db/migrate/**/*"
+    - "bin/**/*"
+    - "node_modules/**/*"
+    - "vendor/**/*"
+
+# Japanese context descriptions don't follow when/with/without pattern
+RSpec/ContextWording:
+  Enabled: false
+
+# let! is used intentionally for side-effect setup (e.g. creating a user before login)
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/NestedGroups:
+  Max: 4
+
+# Relax line length for specs
+Layout/LineLength:
+  Exclude:
+    - "spec/**/*"

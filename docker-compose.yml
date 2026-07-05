@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: booklog_dev
+      POSTGRES_USER: booklog
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booklog -d booklog_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://booklog:password@db:5432/booklog_dev
+      FRONTEND_ORIGIN: http://localhost:5173
+      RAILS_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

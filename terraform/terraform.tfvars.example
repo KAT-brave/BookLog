@@ -1,0 +1,41 @@
+# このファイルをコピーして terraform.tfvars を作成してください
+# cp terraform.tfvars.example terraform.tfvars
+# ※ terraform.tfvars は .gitignore に追加してシークレット情報を保護してください
+
+project    = "booklog"
+env        = "production"
+aws_region = "ap-northeast-1"
+
+# ネットワーク
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24"]
+availability_zones   = ["ap-northeast-1a", "ap-northeast-1c"]
+
+# RDS
+db_name           = "booklog_production"
+db_username       = "booklog"
+db_password       = "your-strong-password-here"  # 変更必須
+db_instance_class = "db.t3.micro"
+
+# ECS (初回デプロイ前に ECR URI に更新してください)
+backend_image         = "123456789.dkr.ecr.ap-northeast-1.amazonaws.com/booklog-production-backend:latest"
+backend_cpu           = 256
+backend_memory        = 512
+backend_desired_count = 1
+
+# Rails
+rails_master_key = "your-rails-master-key-here"  # backend/config/master.key の内容
+
+# S3
+s3_frontend_bucket_name = "booklog-production-frontend"   # グローバルで一意な名前
+s3_storage_bucket_name  = "booklog-production-storage"    # グローバルで一意な名前
+
+# CloudFront
+cloudfront_price_class = "PriceClass_200"
+
+# フロントエンド Origin (CORS)
+frontend_origin = "https://xxxxxxxxxxxx.cloudfront.net"  # CloudFront ドメインに更新
+
+# カスタムドメイン (オプション、空の場合は CloudFront デフォルトドメインを使用)
+domain_name = ""
