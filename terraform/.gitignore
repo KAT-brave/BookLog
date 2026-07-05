@@ -7,9 +7,8 @@
 terraform.tfvars
 *.auto.tfvars
 
-# Terraform working directory
+# Terraform working directory (providers binary - do not commit)
 .terraform/
-.terraform.lock.hcl
 
 # Crash log files
 crash.log
