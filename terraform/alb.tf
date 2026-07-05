@@ -34,29 +34,35 @@ resource "aws_lb_target_group" "backend" {
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-backend-tg" })
 }
 
-# HTTP リスナー (HTTPS へリダイレクト)
+# HTTP リスナー (ドメインなし: 直接転送 / ドメインあり: HTTPS へリダイレクト)
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.main.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+    type             = var.domain_name != "" ? "redirect" : "forward"
+    target_group_arn = var.domain_name != "" ? null : aws_lb_target_group.backend.arn
+
+    dynamic "redirect" {
+      for_each = var.domain_name != "" ? [1] : []
+      content {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
     }
   }
 }
 
-# HTTPS リスナー
+# HTTPS リスナー (カスタムドメインありの場合のみ)
 resource "aws_lb_listener" "https" {
+  count             = var.domain_name != "" ? 1 : 0
   load_balancer_arn = aws_lb.main.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = aws_acm_certificate_validation.backend.certificate_arn
+  certificate_arn   = aws_acm_certificate_validation.backend[0].certificate_arn
 
   default_action {
     type             = "forward"
@@ -64,7 +70,7 @@ resource "aws_lb_listener" "https" {
   }
 }
 
-# ACM 証明書 (バックエンド API ドメイン用)
+# ACM 証明書 (カスタムドメインありの場合のみ)
 resource "aws_acm_certificate" "backend" {
   count             = var.domain_name != "" ? 1 : 0
   domain_name       = "api.${var.domain_name}"
@@ -78,5 +84,6 @@ resource "aws_acm_certificate" "backend" {
 }
 
 resource "aws_acm_certificate_validation" "backend" {
-  certificate_arn = var.domain_name != "" ? aws_acm_certificate.backend[0].arn : ""
+  count           = var.domain_name != "" ? 1 : 0
+  certificate_arn = aws_acm_certificate.backend[0].arn
 }

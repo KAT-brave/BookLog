@@ -98,7 +98,8 @@ export default function HomePage() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> & { statusBadge: (s: string) => React.CSSProperties; tab: (active: boolean) => React.CSSProperties } = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const styles: Record<string, any> = {
   searchBox: { marginBottom: 16 },
   searchInput: { width: "100%", padding: "10px 14px", fontSize: 14, border: "1px solid #d1d5db", borderRadius: 8, outline: "none", boxSizing: "border-box" as const, background: "#fff" },
   tabs: { display: "flex", gap: 4, marginBottom: 24, borderBottom: "1px solid #e5e7eb", paddingBottom: 0 },

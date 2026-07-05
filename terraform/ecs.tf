@@ -120,7 +120,7 @@ resource "aws_ecs_service" "backend" {
 
   tags = merge(local.common_tags, { Name = "${local.name_prefix}-backend-service" })
 
-  depends_on = [aws_lb_listener.https]
+  depends_on = [aws_lb_listener.http]
 }
 
 # SSM パラメータストア (シークレット管理)

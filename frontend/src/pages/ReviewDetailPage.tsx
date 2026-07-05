@@ -1,4 +1,5 @@
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import api from "../lib/api";
@@ -119,10 +120,8 @@ export default function ReviewDetailPage() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> & {
-  statusBadge: (s: string) => React.CSSProperties;
-  likeBtn: (liked: boolean) => React.CSSProperties;
-} = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const styles: Record<string, any> = {
   container: { maxWidth: 640, margin: "32px auto", padding: "0 24px", fontFamily: "sans-serif" },
   back: { display: "inline-block", marginBottom: 16, color: "#6b7280", textDecoration: "none", fontSize: 14 },
   card: { background: "#fff", borderRadius: 12, padding: 32, border: "1px solid #e5e7eb" },

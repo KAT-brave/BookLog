@@ -40,13 +40,11 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.main.name
 
-  backup_retention_period = 7
-  backup_window           = "03:00-04:00"
+  backup_retention_period = 0
   maintenance_window      = "Mon:04:00-Mon:05:00"
 
   deletion_protection = true
-  skip_final_snapshot = false
-  final_snapshot_identifier = "${local.name_prefix}-db-final-snapshot"
+  skip_final_snapshot = true
 
   multi_az = false
 
