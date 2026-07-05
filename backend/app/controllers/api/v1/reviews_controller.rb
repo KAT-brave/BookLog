@@ -13,6 +13,7 @@ module Api
         else
           Review.includes(:user, :likes).order(created_at: :desc)
         end
+        reviews = reviews.where("book_title ILIKE ?", "%#{params[:q]}%") if params[:q].present?
         render json: reviews.map { |r| review_json(r) }
       end
 

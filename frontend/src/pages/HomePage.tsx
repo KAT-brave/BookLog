@@ -11,11 +11,15 @@ export default function HomePage() {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [feed, setFeed] = useState<FeedType>("all");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    const url = feed === "following" ? "/api/v1/reviews?feed=following" : "/api/v1/reviews";
+    const params = new URLSearchParams();
+    if (feed === "following") params.set("feed", "following");
+    if (query.trim()) params.set("q", query.trim());
+    const url = `/api/v1/reviews?${params.toString()}`;
     api.get<Review[]>(url).then((res) => setReviews(res.data));
-  }, [feed]);
+  }, [feed, query]);
 
   const handleLogout = async () => {
     await logout();
@@ -34,6 +38,16 @@ export default function HomePage() {
       </header>
 
       <main style={styles.main}>
+        <div style={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="書籍タイトルで検索..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={styles.searchInput}
+          />
+        </div>
+
         <div style={styles.tabs}>
           <button
             style={styles.tab(feed === "all")}
@@ -51,7 +65,11 @@ export default function HomePage() {
 
         {reviews.length === 0 ? (
           <p style={styles.empty}>
-            {feed === "following" ? "フォロー中のユーザーのレビューがありません。" : "まだレビューがありません。最初の投稿をしてみましょう！"}
+            {query.trim()
+              ? `「${query}」に一致するレビューが見つかりませんでした。`
+              : feed === "following"
+              ? "フォロー中のユーザーのレビューがありません。"
+              : "まだレビューがありません。最初の投稿をしてみましょう！"}
           </p>
         ) : (
           <div style={styles.list}>
@@ -81,6 +99,8 @@ export default function HomePage() {
 }
 
 const styles: Record<string, React.CSSProperties> & { statusBadge: (s: string) => React.CSSProperties; tab: (active: boolean) => React.CSSProperties } = {
+  searchBox: { marginBottom: 16 },
+  searchInput: { width: "100%", padding: "10px 14px", fontSize: 14, border: "1px solid #d1d5db", borderRadius: 8, outline: "none", boxSizing: "border-box" as const, background: "#fff" },
   tabs: { display: "flex", gap: 4, marginBottom: 24, borderBottom: "1px solid #e5e7eb", paddingBottom: 0 },
   tab: (active: boolean) => ({
     padding: "8px 20px", fontSize: 14, fontWeight: active ? 600 : 400,

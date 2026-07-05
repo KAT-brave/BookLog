@@ -50,6 +50,46 @@ RSpec.describe "Api::V1::Reviews", type: :request do
       end
     end
 
+    context "書籍タイトル検索（?q=）の場合" do
+      before do
+        create(:review, book_title: "リーダブルコード", user: user)
+        create(:review, book_title: "Clean Code", user: user)
+        create(:review, book_title: "プログラミング入門", user: user)
+      end
+
+      it "クエリに一致するレビューのみ返す" do
+        get "/api/v1/reviews", params: { q: "コード" }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body.length).to eq(1)
+        expect(body.first["book_title"]).to eq("リーダブルコード")
+      end
+
+      it "大文字小文字を区別しない" do
+        get "/api/v1/reviews", params: { q: "clean" }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body.length).to eq(1)
+        expect(body.first["book_title"]).to eq("Clean Code")
+      end
+
+      it "クエリが空の場合は全件返す" do
+        get "/api/v1/reviews", params: { q: "" }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body).length).to eq(3)
+      end
+
+      it "一致しない場合は空配列を返す" do
+        get "/api/v1/reviews", params: { q: "xyz_not_exist" }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to be_empty
+      end
+    end
+
     context "未認証の場合" do
       it "401を返す" do
         get "/api/v1/reviews", as: :json
