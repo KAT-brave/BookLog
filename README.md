@@ -2,6 +2,19 @@
 
 読んだ本の記録・共有ができる読書ログアプリです。Ruby on Rails（API）+ React / TypeScript で構築したフルスタック Web アプリケーションです。
 
+## 本番 URL
+
+**https://d27xeybd2foudv.cloudfront.net**
+
+### ゲストアカウント
+
+| 項目 | 値 |
+|------|-----|
+| メールアドレス | `guest@booklog.example.com` |
+| パスワード | `guestpass123` |
+
+ゲストアカウントでログインするとサンプルレビュー・フォロー・いいね・コメントが確認できます。
+
 ---
 
 ## アプリ概要
