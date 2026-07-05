@@ -22,6 +22,7 @@ export default function ReviewEditPage() {
 
   return (
     <div style={styles.container}>
+      <button style={styles.backBtn} onClick={() => navigate(`/reviews/${id}`)}>← 戻る</button>
       <h1 style={styles.title}>レビューを編集</h1>
       <ReviewForm
         initial={{
@@ -40,5 +41,6 @@ export default function ReviewEditPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   container: { maxWidth: 560, margin: "48px auto", padding: "0 24px", fontFamily: "sans-serif" },
+  backBtn: { background: "none", border: "none", cursor: "pointer", fontSize: 14, color: "#6b7280", padding: 0, marginBottom: 16 },
   title: { fontSize: 24, fontWeight: 700, marginBottom: 24 },
 };

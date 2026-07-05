@@ -31,6 +31,7 @@ export default function ProfileEditPage() {
 
   return (
     <div style={styles.container}>
+      <button style={styles.backBtn} onClick={() => navigate("/profile")}>← 戻る</button>
       <h1 style={styles.title}>プロフィール編集</h1>
       {error && <p style={styles.error}>{error}</p>}
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -50,6 +51,7 @@ export default function ProfileEditPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   container: { maxWidth: 480, margin: "48px auto", padding: "0 24px", fontFamily: "sans-serif" },
+  backBtn: { background: "none", border: "none", cursor: "pointer", fontSize: 14, color: "#6b7280", padding: 0, marginBottom: 16 },
   title: { fontSize: 24, fontWeight: 700, marginBottom: 24 },
   form: { display: "flex", flexDirection: "column", gap: 16 },
   label: { display: "flex", flexDirection: "column", gap: 4, fontSize: 14, color: "#374151" },
